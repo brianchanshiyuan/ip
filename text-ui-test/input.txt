@@ -1,0 +1,5 @@
+todo Read book
+deadline Submit report /by Sunday
+event Team meeting /from Monday /to Tuesday
+list
+bye
