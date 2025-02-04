@@ -8,8 +8,8 @@ public class Nova {
 
     public static void main(String[] args) {
         System.out.println(SEPARATOR);
-        System.out.println(" Hello! I'm Nova");
-        System.out.println(" What can I do for you?");
+        System.out.println("Hello! I'm Nova");
+        System.out.println("What can I do for you?");
         System.out.println(SEPARATOR);
 
         try (Scanner scanner = new Scanner(System.in)) {
@@ -21,7 +21,7 @@ public class Nova {
 
 
         System.out.println(SEPARATOR);
-        System.out.println(" Bye. Hope to see you again soon!");
+        System.out.println("Bye. Hope to see you again soon!");
         System.out.println(SEPARATOR);
     }
 
@@ -43,7 +43,7 @@ public class Nova {
             if (inputParts.length > 1) {
                 addTask(new Todo(inputParts[1]));
             } else {
-                System.out.println(" Invalid format! Use: todo [task description]");
+                System.out.println("Invalid format! Use: todo [task description]");
             }
             break;
         case "deadline":
@@ -53,7 +53,7 @@ public class Nova {
             processEvent(inputParts);
             break;
         default:
-            System.out.println(" Invalid command! Use: todo, deadline, event, mark, unmark, list, or bye.");
+            System.out.println("Invalid command! Use: todo, deadline, event, mark, unmark, list, or bye.");
         }
     }
 
@@ -63,7 +63,7 @@ public class Nova {
             if (details.length == 2) {
                 addTask(new Deadline(details[0], "by: " + details[1]));
             } else {
-                System.out.println(" Invalid format! Use: deadline [task] /by [dateDue]");
+                System.out.println("Invalid format! Use: deadline [task] /by [dateDue]");
             }
         }
     }
@@ -76,10 +76,10 @@ public class Nova {
                 if (timeParts.length == 2) {
                     addTask(new Event(details[0], "from: " + timeParts[0], "to: " + timeParts[1]));
                 } else {
-                    System.out.println(" Invalid format! Use: event [task] /from [start] /to [end]");
+                    System.out.println("Invalid format! Use: event [task] /from [start] /to [end]");
                 }
             } else {
-                System.out.println(" Invalid format! Use: event [task] /from [start] /to [end]");
+                System.out.println("Invalid format! Use: event [task] /from [start] /to [end]");
             }
         }
     }
@@ -88,13 +88,12 @@ public class Nova {
         if (taskCount < MAX_TASKS) {
             tasks[taskCount++] = task;
             System.out.println(SEPARATOR);
-            System.out.println(" Got it. I've added this task:");
-
+            System.out.println("Got it. I've added this task:");
             System.out.println("   " + task);
-            System.out.println(" Now you have " + taskCount + " tasks in the list.");
+            System.out.println("Now you have " + taskCount + " tasks in the list.");
             System.out.println(SEPARATOR);
         } else {
-            System.out.println(" Task list is full!");
+            System.out.println("Task list is full!");
         }
     }
 
@@ -125,9 +124,9 @@ public class Nova {
             if (taskIndex >= 0 && taskIndex < taskCount) {
                 return taskIndex;
             }
-            System.out.println(" Invalid task number.");
+            System.out.println("Invalid task number.");
         } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
-            System.out.println(" Invalid input format. Use: mark [number] or unmark [number]");
+            System.out.println("Invalid input format. Use: mark [number] or unmark [number]");
         }
         return -1;
     }
