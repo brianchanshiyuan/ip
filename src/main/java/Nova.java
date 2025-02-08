@@ -7,23 +7,48 @@ public class Nova {
     private static int taskCount = 0;
 
     public static void main(String[] args) {
+        printWelcomeMessage();
+        processUserInput();
+        printExitMessage();
+    }
+
+    private static void printWelcomeMessage() {
         System.out.println(SEPARATOR);
         System.out.println("Hello! I'm Nova");
         System.out.println("What can I do for you?");
         System.out.println(SEPARATOR);
+    }
 
+    private static void processUserInput() {
         try (Scanner scanner = new Scanner(System.in)) {
             String input;
             while (!(input = scanner.nextLine().trim()).equals("bye")) {
-                processInput(input);
+                handleInput(input);
             }
         }
+    }
+
+    private static void handleInput(String input) {
+        try {
+            processInput(input);
+        } catch (NovaException e) {
+            printErrorMessage(e.getMessage());
+        }
+    }
+
+    private static void printErrorMessage(String message) {
+        System.out.println(SEPARATOR);
+        System.out.println("OOPS!!! " + message);
+        System.out.println(SEPARATOR);
+    }
+
+    private static void printExitMessage() {
         System.out.println(SEPARATOR);
         System.out.println("Bye. Hope to see you again soon!");
         System.out.println(SEPARATOR);
     }
 
-    private static void processInput(String input) {
+    private static void processInput(String input) throws NovaException {
         String[] inputParts = input.split(" ", 2);
         String command = inputParts[0];
 
@@ -38,47 +63,47 @@ public class Nova {
             markTask(input, false);
             break;
         case "todo":
-            if (inputParts.length > 1) {
-                addTask(new Todo(inputParts[1]));
-            } else {
-                System.out.println("Invalid format! Use: todo [task description]");
-            }
+            validateTaskDescription(inputParts, "todo");
+            addTask(new Todo(inputParts[1]));
             break;
         case "deadline":
-            processDeadline(inputParts);
+            //processDeadline(inputParts);
+            addDeadline(inputParts);
             break;
         case "event":
-            processEvent(inputParts);
+            //processEvent(inputParts);
+            addEvent(inputParts);
             break;
         default:
-            System.out.println("Invalid command! Use: todo, deadline, event, mark, unmark, list, or bye.");
+            throw new NovaException("I'm sorry, but I don't know what that means :-(");
+            //System.out.println("Invalid command! Use: todo, deadline, event, mark, unmark, list, or bye.");
         }
     }
 
-    private static void processDeadline(String[] inputParts) {
-        if (inputParts.length > 1) {
-            String[] details = inputParts[1].split(" /by ", 2);
-            if (details.length == 2) {
-                addTask(new Deadline(details[0], "by: " + details[1]));
-            } else {
-                System.out.println("Invalid format! Use: deadline [task] /by [dateDue]");
-            }
-        }
+    private static void addDeadline(String[] inputParts) throws NovaException {
+        validateTaskDescription(inputParts, "deadline");
+        String[] details = parseTaskDetails(inputParts[1], "/by");
+        addTask(new Deadline(details[0], "by: " + details[1]));
     }
 
-    private static void processEvent(String[] inputParts) {
-        if (inputParts.length > 1) {
-            String[] details = inputParts[1].split(" /from ", 2);
-            if (details.length == 2) {
-                String[] timeParts = details[1].split(" /to ", 2);
-                if (timeParts.length == 2) {
-                    addTask(new Event(details[0], "from: " + timeParts[0], "to: " + timeParts[1]));
-                } else {
-                    System.out.println("Invalid format! Use: event [task] /from [start] /to [end]");
-                }
-            } else {
-                System.out.println("Invalid format! Use: event [task] /from [start] /to [end]");
-            }
+    private static void addEvent(String[] inputParts) throws NovaException {
+        validateTaskDescription(inputParts, "event");
+        String[] details = parseTaskDetails(inputParts[1], "/from");
+        String[] timeParts = parseTaskDetails(details[1], "/to");
+        addTask(new Event(details[0], "from: " + timeParts[0], "to: " + timeParts[1]));
+    }
+
+    private static String[] parseTaskDetails(String input, String delimiter) throws NovaException {
+        String[] details = input.split(" " + delimiter + " ", 2);
+        if (details.length < 2) {
+            throw new NovaException("Invalid format! Use the correct command syntax.");
+        }
+        return details;
+    }
+
+    private static void validateTaskDescription(String[] inputParts, String taskType) throws NovaException {
+        if (inputParts.length < 2 || inputParts[1].trim().isEmpty()) {
+            throw new NovaException("The description of a " + taskType + " cannot be empty.");
         }
     }
 
@@ -105,7 +130,7 @@ public class Nova {
         System.out.println(SEPARATOR);
     }
 
-    private static void markTask(String input, boolean isDone) {
+    private static void markTask(String input, boolean isDone) throws NovaException {
         int taskIndex = getTaskIndex(input);
         if (taskIndex != -1) {
             tasks[taskIndex].markAsDone(isDone);
@@ -116,17 +141,26 @@ public class Nova {
         }
     }
 
-    private static int getTaskIndex(String input) {
+    private static int getTaskIndex(String input) throws NovaException {
         try {
             int taskIndex = Integer.parseInt(input.split(" ")[1]) - 1;
             if (taskIndex >= 0 && taskIndex < taskCount) {
                 return taskIndex;
             }
-            System.out.println("Invalid task number.");
+            throw new NovaException("Invalid task number.");
         } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
-            System.out.println("Invalid input format. Use: mark [number] or unmark [number]");
+            throw new NovaException("Invalid input format. Use: mark [number] or unmark [number]");
         }
-        return -1;
+    }
+    private static void printError(String message) {
+        System.out.println(SEPARATOR);
+        System.out.println("OOPS!!! " + message);
+        System.out.println(SEPARATOR);
+    }
+    static class NovaException extends Exception {
+        public NovaException(String message) {
+            super(message);
+        }
     }
 }
 
