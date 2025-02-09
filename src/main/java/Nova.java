@@ -75,7 +75,7 @@ public class Nova {
             addEvent(inputParts);
             break;
         default:
-            throw new NovaException("I'm sorry, but I don't know what that means :-(");
+            throw new NovaException("Unknown command! Available commands: list, mark, unmark, todo, deadline, event.");
             //System.out.println("Invalid command! Use: todo, deadline, event, mark, unmark, list, or bye.");
         }
     }
@@ -96,14 +96,14 @@ public class Nova {
     private static String[] parseTaskDetails(String input, String delimiter) throws NovaException {
         String[] details = input.split(" " + delimiter + " ", 2);
         if (details.length < 2) {
-            throw new NovaException("Invalid format! Use the correct command syntax.");
+            throw new NovaException("Invalid format! Use 'deadline [task] /by [date]' or 'event [task] /from [start] /to [end]'.");
         }
         return details;
     }
 
     private static void validateTaskDescription(String[] inputParts, String taskType) throws NovaException {
         if (inputParts.length < 2 || inputParts[1].trim().isEmpty()) {
-            throw new NovaException("The description of a " + taskType + " cannot be empty.");
+            throw new NovaException("The description of a " + taskType + " cannot be empty. Example: '" + taskType + " Buy groceries'.");
         }
     }
 
@@ -147,7 +147,7 @@ public class Nova {
             if (taskIndex >= 0 && taskIndex < taskCount) {
                 return taskIndex;
             }
-            throw new NovaException("Invalid task number.");
+            throw new NovaException("Invalid task number. Enter a number between 1 and " + taskCount + ".");
         } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
             throw new NovaException("Invalid input format. Use: mark [number] or unmark [number]");
         }
