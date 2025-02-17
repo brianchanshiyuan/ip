@@ -74,9 +74,29 @@ public class Nova {
             //processEvent(inputParts);
             addEvent(inputParts);
             break;
+        case "delete":
+            deleteTask(input);
+            break;
         default:
-            throw new NovaException("Unknown command! Available commands: list, mark, unmark, todo, deadline, event.");
+            throw new NovaException("Unknown command! Available commands: list, mark, unmark, todo, deadline, event, delete.");
             //System.out.println("Invalid command! Use: todo, deadline, event, mark, unmark, list, or bye.");
+        }
+    }
+
+    private static void deleteTask(String input) throws NovaException {
+        int taskIndex = getTaskIndex(input);
+        if (taskIndex != -1) {
+            Task removedTask = tasks[taskIndex]; // Get the task to be removed
+            for (int i = taskIndex; i < taskCount - 1; i++) { // Shift tasks to fill the gap
+                tasks[i] = tasks[i + 1];
+            }
+            tasks[--taskCount] = null; // Clear the last element (important!)
+
+            System.out.println(SEPARATOR);
+            System.out.println("Noted. I've removed this task:");
+            System.out.println("   " + removedTask);
+            System.out.println("Now you have " + taskCount + " tasks in the list.");
+            System.out.println(SEPARATOR);
         }
     }
 
