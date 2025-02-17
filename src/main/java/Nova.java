@@ -1,9 +1,9 @@
 import java.util.Scanner;
+import java.util.ArrayList;
 
 public class Nova {
     public static final String SEPARATOR = "____________________________________________________________";
-    private static final int MAX_TASKS = 100;
-    private static final Task[] tasks = new Task[MAX_TASKS];
+    private static final ArrayList<Task> tasks = new ArrayList<>();
     private static int taskCount = 0;
 
     public static void main(String[] args) {
@@ -86,12 +86,8 @@ public class Nova {
     private static void deleteTask(String input) throws NovaException {
         int taskIndex = getTaskIndex(input);
         if (taskIndex != -1) {
-            Task removedTask = tasks[taskIndex]; // Get the task to be removed
-            for (int i = taskIndex; i < taskCount - 1; i++) { // Shift tasks to fill the gap
-                tasks[i] = tasks[i + 1];
-            }
-            tasks[--taskCount] = null; // Clear the last element (important!)
-
+            Task removedTask = tasks.remove(taskIndex);
+            taskCount--; // Decrement task count
             System.out.println(SEPARATOR);
             System.out.println("Noted. I've removed this task:");
             System.out.println("   " + removedTask);
@@ -128,50 +124,48 @@ public class Nova {
     }
 
     private static void addTask(Task task) {
-        if (taskCount < MAX_TASKS) {
-            tasks[taskCount++] = task;
-            System.out.println(SEPARATOR);
-            System.out.println("Got it. I've added this task:");
-            System.out.println("   " + task);
-            System.out.println("Now you have " + taskCount + " tasks in the list.");
-            System.out.println(SEPARATOR);
-        } else {
-            System.out.println("Task list is full!");
-        }
+        tasks.add(task);
+        taskCount++; // Still useful for keeping track of the number of tasks
+        System.out.println(SEPARATOR);
+        System.out.println("Got it. I've added this task:");
+        System.out.println("   " + task);
+        System.out.println("Now you have " + taskCount + " tasks in the list.");
+        System.out.println(SEPARATOR);
     }
 
     private static void printTaskList() {
         System.out.println(SEPARATOR);
         System.out.println("Here are the tasks in your list:");
-        for (int i = 0; i < taskCount; i++) {
-            System.out.printf(" %d. %s%n", i + 1, tasks[i]);
+        for (int i = 0; i < tasks.size(); i++) {
+            System.out.printf(" %d. %s%n", i + 1, tasks.get(i));
         }
-
         System.out.println(SEPARATOR);
     }
 
     private static void markTask(String input, boolean isDone) throws NovaException {
         int taskIndex = getTaskIndex(input);
         if (taskIndex != -1) {
-            tasks[taskIndex].markAsDone(isDone);
+            tasks.get(taskIndex).markAsDone(isDone); // Use ArrayList's get()
             System.out.println(SEPARATOR);
             System.out.println(" " + (isDone ? "Nice! I've marked this task as done:" : "OK, I've marked this task as not done yet:"));
-            System.out.println("   " + tasks[taskIndex]);
+            System.out.println("   " + tasks.get(taskIndex)); // Use ArrayList's get()
             System.out.println(SEPARATOR);
         }
     }
 
+
     private static int getTaskIndex(String input) throws NovaException {
         try {
             int taskIndex = Integer.parseInt(input.split(" ")[1]) - 1;
-            if (taskIndex >= 0 && taskIndex < taskCount) {
+            if (taskIndex >= 0 && taskIndex < tasks.size()) { // Use ArrayList's size()
                 return taskIndex;
             }
-            throw new NovaException("Invalid task number. Enter a number between 1 and " + taskCount + ".");
+            throw new NovaException("Invalid task number. Enter a number between 1 and " + tasks.size() + "."); // Use ArrayList's size()
         } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
             throw new NovaException("Invalid input format. Use: mark [number] or unmark [number]");
         }
     }
+
     private static void printError(String message) {
         System.out.println(SEPARATOR);
         System.out.println("OOPS!!! " + message);
