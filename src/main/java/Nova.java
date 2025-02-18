@@ -138,8 +138,8 @@ public class Nova {
     private static void writeTasksToFile() throws IOException {
         File file = new File(DATA_FILE_PATH);
         FileWriter writer = new FileWriter(file);
-        for (int i = 0; i < taskCount; i++) {  // Iterate up to taskCount!
-            if (tasks[i] != null) { // Check for null before formatting
+        for (int i = 0; i < taskCount; i++) {
+            if (tasks[i] != null) {
                 writer.write(formatTask(tasks[i]) + System.lineSeparator());
             }
         }
@@ -240,7 +240,7 @@ public class Nova {
             deleteTask(input);
             break;
         default:
-            throw new NovaException("Unknown command! Available commands: list, mark, unmark, todo, deadline, event, delete.");
+            throw new NovaException("Unknown command! Available commands: list, mark, unmark, todo, deadline, event.");
             //System.out.println("Invalid command! Use: todo, deadline, event, mark, unmark, list, or bye.");
         }
     }
@@ -304,6 +304,7 @@ public class Nova {
         for (int i = 0; i < taskCount; i++) {
             System.out.printf(" %d. %s%n", i + 1, tasks[i]);
         }
+
         System.out.println(SEPARATOR);
     }
 
@@ -329,7 +330,6 @@ public class Nova {
             throw new NovaException("Invalid input format. Use: mark [number] or unmark [number]");
         }
     }
-
     private static void printError(String message) {
         System.out.println(SEPARATOR);
         System.out.println("OOPS!!! " + message);
