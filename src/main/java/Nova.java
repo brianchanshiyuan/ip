@@ -1,15 +1,178 @@
-import java.util.Scanner;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.FileWriter;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 public class Nova {
     public static final String SEPARATOR = "____________________________________________________________";
-    private static final ArrayList<Task> tasks = new ArrayList<>();
+    private static final int MAX_TASKS = 100; // This is needed for the array version
+    private static final Task[] tasks = new Task[MAX_TASKS];
     private static int taskCount = 0;
+    private static final String DATA_FILE_PATH = "./data/nova.txt";
 
     public static void main(String[] args) {
+        loadTasks();
         printWelcomeMessage();
         processUserInput();
+        saveTasks();
         printExitMessage();
+    }
+
+    private static void loadTasks() {
+        try {
+            createDataDirectory();
+            loadFile();
+        } catch (IOException e) {
+            handleLoadingError(e);
+        }
+    }
+
+    private static void createDataDirectory() throws IOException {
+        Files.createDirectories(Paths.get("./data"));
+    }
+
+    private static void loadFile() throws FileNotFoundException {
+        File file = new File(DATA_FILE_PATH);
+        if (file.exists()) {
+            readTasksFromFile(file);
+        }
+    }
+
+    private static void readTasksFromFile(File file) throws FileNotFoundException {
+        Scanner scanner = new Scanner(file);
+        while (scanner.hasNextLine()) {
+            processLine(scanner.nextLine());
+        }
+        scanner.close();
+    }
+
+    private static void processLine(String line) {
+        try {
+            Task task = parseTask(line);
+            addTaskToList(task);
+        } catch (NovaException e) {
+            handleParsingError(line, e);
+        }
+    }
+
+    private static Task parseTask(String line) throws NovaException {
+        String[] parts = line.split("\\|");
+        validateTaskFormat(parts);
+        return createTaskFromParts(parts);
+    }
+
+    private static void validateTaskFormat(String[] parts) throws NovaException {
+        if (parts.length < 3) {
+            throw new NovaException("Invalid task format in file.");
+        }
+    }
+
+    private static Task createTaskFromParts(String[] parts) throws NovaException {
+        String type = parts[0].trim();
+        String description = parts[2].trim();
+        Task task = determineTaskType(type, description, parts);
+        setTaskDoneStatus(task, parts[1].trim().equals("1"));
+        return task;
+    }
+
+    private static Task determineTaskType(String type, String description, String[] parts) throws NovaException {
+        switch (type) {
+        case "T":
+            return new Todo(description);
+        case "D":
+            return createDeadline(description, parts);
+        case "E":
+            return createEvent(description, parts);
+        default:
+            throw new NovaException("Unknown task type in file.");
+        }
+    }
+
+    private static Task createDeadline(String description, String[] parts) throws NovaException {
+        if (parts.length == 4) {
+            return new Deadline(description, "by: " + parts[3].trim());
+        } else {
+            throw new NovaException("Invalid deadline format in file.");
+        }
+    }
+
+    private static Task createEvent(String description, String[] parts) throws NovaException {
+        if (parts.length == 5) {
+            return new Event(description, "from: " + parts[3].trim(), "to: " + parts[4].trim());
+        } else {
+            throw new NovaException("Invalid event format in file.");
+        }
+    }
+
+    private static void setTaskDoneStatus(Task task, boolean isDone) {
+        if (task != null) {
+            task.markAsDone(isDone);
+        }
+    }
+
+    private static void addTaskToList(Task task) {
+        if (task != null && taskCount < MAX_TASKS) { // Check for null AND array bounds
+            tasks[taskCount++] = task; // Correct way to add to an array
+        }
+    }
+
+    private static void handleParsingError(String line, NovaException e) {
+        System.err.println("Error loading task: " + line + " - " + e.getMessage());
+    }
+
+    private static void handleLoadingError(IOException e) {
+        System.err.println("Error loading tasks: " + e.getMessage());
+    }
+    private static void saveTasks() {
+        try {
+            writeTasksToFile();
+        } catch (IOException e) {
+            handleSavingError(e);
+        }
+    }
+
+    private static void writeTasksToFile() throws IOException {
+        File file = new File(DATA_FILE_PATH);
+        FileWriter writer = new FileWriter(file);
+        for (int i = 0; i < taskCount; i++) {
+            if (tasks[i] != null) {
+                writer.write(formatTask(tasks[i]) + System.lineSeparator());
+            }
+        }
+        writer.close();
+    }
+
+    private static String formatTask(Task task) {
+        String type = determineTaskTypeString(task);
+        int isDone = task.isDone ? 1 : 0;
+        String formatted = type + " | " + isDone + " | " + task.description;
+
+        if (task instanceof Deadline) {
+            formatted += " | " + ((Deadline) task).by.substring(4).trim(); // Remove "by: "
+        } else if (task instanceof Event) {
+            formatted += " | " + ((Event) task).from.substring(6).trim() + " | " + ((Event) task).to.substring(4).trim(); // Remove "from: " and "to: "
+        }
+        return formatted;
+    }
+
+    private static String determineTaskTypeString(Task task) {
+        if (task instanceof Todo) {
+            return "T";
+        } else if (task instanceof Deadline) {
+            return "D";
+        } else if (task instanceof Event) {
+            return "E";
+        }
+        return ""; // Or throw an exception for unknown task types
+    }
+
+    private static void handleSavingError(IOException e) {
+        System.err.println("Error saving tasks: " + e.getMessage());
     }
 
     private static void printWelcomeMessage() {
@@ -74,25 +237,9 @@ public class Nova {
             //processEvent(inputParts);
             addEvent(inputParts);
             break;
-        case "delete":
-            deleteTask(input);
-            break;
         default:
-            throw new NovaException("Unknown command! Available commands: list, mark, unmark, todo, deadline, event, delete.");
+            throw new NovaException("Unknown command! Available commands: list, mark, unmark, todo, deadline, event.");
             //System.out.println("Invalid command! Use: todo, deadline, event, mark, unmark, list, or bye.");
-        }
-    }
-
-    private static void deleteTask(String input) throws NovaException {
-        int taskIndex = getTaskIndex(input);
-        if (taskIndex != -1) {
-            Task removedTask = tasks.remove(taskIndex);
-            taskCount--; // Decrement task count
-            System.out.println(SEPARATOR);
-            System.out.println("Noted. I've removed this task:");
-            System.out.println("   " + removedTask);
-            System.out.println("Now you have " + taskCount + " tasks in the list.");
-            System.out.println(SEPARATOR);
         }
     }
 
@@ -124,20 +271,24 @@ public class Nova {
     }
 
     private static void addTask(Task task) {
-        tasks.add(task);
-        taskCount++; // Still useful for keeping track of the number of tasks
-        System.out.println(SEPARATOR);
-        System.out.println("Got it. I've added this task:");
-        System.out.println("   " + task);
-        System.out.println("Now you have " + taskCount + " tasks in the list.");
-        System.out.println(SEPARATOR);
+        if (taskCount < MAX_TASKS) {
+            tasks[taskCount] = task;  // Add the task at the current index
+            taskCount++;             // Increment the task count AFTER adding
+            System.out.println(SEPARATOR);
+            System.out.println("Got it. I've added this task:");
+            System.out.println("   " + task);
+            System.out.println("Now you have " + taskCount + " tasks in the list.");
+            System.out.println(SEPARATOR);
+        } else {
+            System.out.println("Task list is full!");
+        }
     }
 
     private static void printTaskList() {
         System.out.println(SEPARATOR);
         System.out.println("Here are the tasks in your list:");
-        for (int i = 0; i < tasks.size(); i++) {
-            System.out.printf(" %d. %s%n", i + 1, tasks.get(i));
+        for (int i = 0; i < taskCount; i++) { // Iterate up to taskCount
+            System.out.printf(" %d. %s%n", i + 1, tasks[i]);
         }
         System.out.println(SEPARATOR);
     }
@@ -145,22 +296,21 @@ public class Nova {
     private static void markTask(String input, boolean isDone) throws NovaException {
         int taskIndex = getTaskIndex(input);
         if (taskIndex != -1) {
-            tasks.get(taskIndex).markAsDone(isDone); // Use ArrayList's get()
+            tasks[taskIndex].markAsDone(isDone);
             System.out.println(SEPARATOR);
             System.out.println(" " + (isDone ? "Nice! I've marked this task as done:" : "OK, I've marked this task as not done yet:"));
-            System.out.println("   " + tasks.get(taskIndex)); // Use ArrayList's get()
+            System.out.println("   " + tasks[taskIndex]);
             System.out.println(SEPARATOR);
         }
     }
 
-
     private static int getTaskIndex(String input) throws NovaException {
         try {
             int taskIndex = Integer.parseInt(input.split(" ")[1]) - 1;
-            if (taskIndex >= 0 && taskIndex < tasks.size()) { // Use ArrayList's size()
+            if (taskIndex >= 0 && taskIndex < taskCount) { // Use taskCount here
                 return taskIndex;
             }
-            throw new NovaException("Invalid task number. Enter a number between 1 and " + tasks.size() + "."); // Use ArrayList's size()
+            throw new NovaException("Invalid task number. Enter a number between 1 and " + taskCount + "."); // And here
         } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
             throw new NovaException("Invalid input format. Use: mark [number] or unmark [number]");
         }
