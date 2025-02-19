@@ -115,8 +115,8 @@ public class Nova {
     }
 
     private static void addTaskToList(Task task) {
-        if (task != null && taskCount < MAX_TASKS) { // Check for null AND array bounds
-            tasks[taskCount++] = task; // Correct way to add to an array
+        if (task != null && taskCount < tasks.size()) { // Check for null AND array bounds
+            tasks.add(task);
         }
     }
 
@@ -139,8 +139,8 @@ public class Nova {
         File file = new File(DATA_FILE_PATH);
         FileWriter writer = new FileWriter(file);
         for (int i = 0; i < taskCount; i++) {
-            if (tasks[i] != null) {
-                writer.write(formatTask(tasks[i]) + System.lineSeparator());
+            if (tasks.get(i) != null) {
+                writer.write(formatTask(tasks.get(i))  + System.lineSeparator());
             }
         }
         writer.close();
@@ -229,11 +229,9 @@ public class Nova {
             addTask(new Todo(inputParts[1]));
             break;
         case "deadline":
-            //processDeadline(inputParts);
             addDeadline(inputParts);
             break;
         case "event":
-            //processEvent(inputParts);
             addEvent(inputParts);
             break;
         case "delete":
@@ -286,16 +284,13 @@ public class Nova {
     }
 
     private static void addTask(Task task) {
-        if (taskCount < MAX_TASKS) {
-            tasks[taskCount++] = task;
-            System.out.println(SEPARATOR);
-            System.out.println("Got it. I've added this task:");
-            System.out.println("   " + task);
-            System.out.println("Now you have " + taskCount + " tasks in the list.");
-            System.out.println(SEPARATOR);
-        } else {
-            System.out.println("Task list is full!");
-        }
+        tasks.add(task);
+        System.out.println(SEPARATOR);
+        System.out.println("Got it. I've added this task:");
+        taskCount++;
+        System.out.println("   " + task);
+        System.out.println("Now you have " + taskCount + " tasks in the list.");
+        System.out.println(SEPARATOR);
     }
 
     private static void printTaskList() {
@@ -310,10 +305,10 @@ public class Nova {
     private static void markTask(String input, boolean isDone) throws NovaException {
         int taskIndex = getTaskIndex(input);
         if (taskIndex != -1) {
-            tasks[taskIndex].markAsDone(isDone);
+            tasks.get(taskIndex).markAsDone(isDone);
             System.out.println(SEPARATOR);
             System.out.println(" " + (isDone ? "Nice! I've marked this task as done:" : "OK, I've marked this task as not done yet:"));
-            System.out.println("   " + tasks[taskIndex]);
+            System.out.println("   " + tasks.get(taskIndex));
             System.out.println(SEPARATOR);
         }
     }
