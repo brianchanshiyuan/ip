@@ -1,2 +1,2 @@
-T | 0 | asdj asd
-D | 0 | asdas | iajsddas
+E | 0 | Brian Chan attend CS2113 lecture Friday 21 Feb 2025 | 4 | 6pm
+D | 0 | Brian Chan submit UG draft | today 2359
