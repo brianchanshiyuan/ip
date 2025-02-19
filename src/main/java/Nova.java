@@ -301,10 +301,9 @@ public class Nova {
     private static void printTaskList() {
         System.out.println(SEPARATOR);
         System.out.println("Here are the tasks in your list:");
-        for (int i = 0; i < taskCount; i++) {
-            System.out.printf(" %d. %s%n", i + 1, tasks[i]);
+        for (int i = 0; i < tasks.size(); i++) {
+            System.out.printf(" %d. %s%n", i + 1, tasks.get(i));
         }
-
         System.out.println(SEPARATOR);
     }
 
@@ -330,6 +329,7 @@ public class Nova {
             throw new NovaException("Invalid input format. Use: mark [number] or unmark [number]");
         }
     }
+
     private static void printError(String message) {
         System.out.println(SEPARATOR);
         System.out.println("OOPS!!! " + message);
