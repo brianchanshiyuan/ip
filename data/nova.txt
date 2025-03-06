@@ -1,2 +1,3 @@
-E | 0 | Brian Chan attend CS2113 lecture Friday 21 Feb 2025 | 4 | 6pm
 D | 0 | Brian Chan submit UG draft | today 2359
+T | 0 | sadjdas
+T | 0 | asdasdoas
