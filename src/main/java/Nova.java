@@ -113,7 +113,6 @@ class Ui {
 
 class Storage {
     private final String filePath;
-
     public Storage(String filePath) {
         this.filePath = filePath;
     }
@@ -507,7 +506,6 @@ class Event extends Task {
         return "[E]" + super.toString() + " (" + from + " " + to + ")";
     }
 }
-
 
 class NovaException extends Exception {
     public NovaException(String message) {
