@@ -86,7 +86,6 @@ Noted. I've removed this task:
 [T][ ] Buy groceries
 Now you have 2 tasks in the list.
 
-
 ## Finding Tasks
 
 To find tasks containing a specific keyword, use the `find` command followed by the keyword.
