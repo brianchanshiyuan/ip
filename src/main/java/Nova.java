@@ -102,11 +102,17 @@ class Ui {
         System.out.println(" " + (isDone ? "Nice! I've marked this task as done:" : "OK, I've marked this task as not done yet:"));
         System.out.println("   " + task);
     }
+
+    public void showFoundTasks(ArrayList<Task> foundTasks) {
+        System.out.println("Here are the matching tasks in your list:");
+        for (int i = 0; i < foundTasks.size(); i++) {
+            System.out.printf(" %d.%s%n", i + 1, foundTasks.get(i));
+        }
+    }
 }
 
 class Storage {
     private final String filePath;
-
     public Storage(String filePath) {
         this.filePath = filePath;
     }
@@ -215,8 +221,10 @@ class Parser {
             return new DeleteCommand(input);
         case "bye":
             return new ExitCommand();
+        case "find":
+            return new FindCommand(inputParts);
         default:
-            throw new NovaException("Unknown command! Available commands: list, mark, unmark, todo, deadline, event, bye.");
+            throw new NovaException("Unknown command! Available commands: list, mark, unmark, todo, deadline, event, delete, find, bye.");
         }
     }
 }
@@ -413,6 +421,29 @@ class ExitCommand extends Command {
     @Override
     public boolean isExit() {
         return true;
+    }
+}
+
+class FindCommand extends Command {
+    private final String[] inputParts;
+
+    public FindCommand(String[] inputParts) {
+        this.inputParts = inputParts;
+    }
+
+    @Override
+    public void execute(TaskList tasks, Ui ui, Storage storage) throws NovaException {
+        if (inputParts.length < 2 || inputParts[1].trim().isEmpty()) {
+            throw new NovaException("The keyword to find cannot be empty. Example: 'find book'.");
+        }
+        String keyword = inputParts[1].trim().toLowerCase();
+        ArrayList<Task> foundTasks = new ArrayList<>();
+        for (Task task : tasks.getTasks()) {
+            if (task.description.toLowerCase().contains(keyword)) {
+                foundTasks.add(task);
+            }
+        }
+        ui.showFoundTasks(foundTasks);
     }
 }
 
