@@ -6,12 +6,25 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+/**
+ * The main class for the Nova task management application.
+ *
+ * This class is responsible for initializing the application,
+ * running the main command loop, and handling user input.
+ */
+
 public class Nova {
 
     private Storage storage;
     private TaskList tasks;
     private Ui ui;
     private Parser parser;
+
+    /**
+     * Constructs a new Nova instance.
+     *
+     * @param filePath The path to the file where tasks are stored.
+     */
 
     public Nova(String filePath) {
         ui = new Ui();
@@ -24,6 +37,15 @@ public class Nova {
             tasks = new TaskList();
         }
     }
+
+
+    /**
+     * Runs the main command loop.
+     *
+     * This method continuously reads user input, parses it,
+     * and executes the corresponding command.
+     */
+
 
     public void run() {
         ui.showWelcome();
@@ -43,10 +65,23 @@ public class Nova {
         }
     }
 
+    /**
+     * The main entry point for the application.
+     *
+     * @param args The command line arguments (not used).
+     */
+
     public static void main(String[] args) {
         new Nova("./data/Nova.txt").run();
     }
 }
+
+/**
+ * The user interface class for the Nova application.
+ *
+ * This class is responsible for displaying messages to the user,
+ * reading user input, and showing the task list.
+ */
 
 class Ui {
     private static final String SEPARATOR = "____________________________________________________________";
@@ -59,25 +94,58 @@ class Ui {
         showLine();
     }
 
+    /**
+     * Displays a separator line.
+     */
+
     public void showLine() {
         System.out.println(SEPARATOR);
     }
+
+    /**
+     * Reads a command from the user.
+     *
+     * @return The command entered by the user.
+     */
 
     public String readCommand() {
         return scanner.nextLine().trim();
     }
 
+    /**
+     * Displays an error message.
+     *
+     * @param message The error message to display.
+     */
+
     public void showError(String message) {
         System.out.println("OOPS!!! " + message);
     }
+
+    /**
+     * Displays an error message when loading tasks fails.
+     *
+     * @param message The error message to display.
+     */
 
     public void showLoadingError(String message) {
         System.err.println("Error loading tasks: " + message);
     }
 
+    /**
+     * Displays the exit message.
+     */
+
     public void showExit() {
         System.out.println("Bye. Hope to see you again soon!");
     }
+
+    /**
+     * Displays a message indicating that a task has been added.
+     *
+     * @param task The task that was added.
+     * @param taskCount The new total number of tasks.
+     */
 
     public void showTaskAdded(Task task, int taskCount) {
         System.out.println("Got it. I've added this task:");
@@ -85,11 +153,24 @@ class Ui {
         System.out.println("Now you have " + taskCount + " tasks in the list.");
     }
 
+    /**
+     * Displays a message indicating that a task has been removed.
+     *
+     * @param task The task that was removed.
+     * @param taskCount The new total number of tasks.
+     */
+
     public void showTaskRemoved(Task task, int taskCount) {
         System.out.println("Noted. I've removed this task:");
         System.out.println("   " + task);
         System.out.println("Now you have " + taskCount + " tasks in the list.");
     }
+
+    /**
+     * Displays the list of tasks.
+     *
+     * @param tasks The list of tasks to display.
+     */
 
     public void showTaskList(ArrayList<Task> tasks) {
         System.out.println("Here are the tasks in your list:");
@@ -98,10 +179,23 @@ class Ui {
         }
     }
 
+    /**
+     * Displays a message indicating that a task has been marked as done or not done.
+     *
+     * @param task The task that was marked.
+     * @param isDone Whether the task was marked as done or not done.
+     */
+
     public void showTaskMarked(Task task, boolean isDone) {
         System.out.println(" " + (isDone ? "Nice! I've marked this task as done:" : "OK, I've marked this task as not done yet:"));
         System.out.println("   " + task);
     }
+
+    /**
+     * Displays the list of tasks that match a search keyword.
+     *
+     * @param foundTasks The list of tasks that match the search keyword.
+     */
 
     public void showFoundTasks(ArrayList<Task> foundTasks) {
         System.out.println("Here are the matching tasks in your list:");
@@ -111,11 +205,32 @@ class Ui {
     }
 }
 
+
+/**
+ * The storage class for the Nova application.
+ *
+ * This class is responsible for loading tasks from and saving tasks to a file.
+ */
+
 class Storage {
     private final String filePath;
+    /**
+     * Constructs a new Storage instance.
+     *
+     * @param filePath The path to the file where tasks are stored.
+     */
+
     public Storage(String filePath) {
         this.filePath = filePath;
     }
+
+
+    /**
+     * Loads tasks from the storage file.
+     *
+     * @return An ArrayList of tasks loaded from the file.
+     * @throws NovaException If there is an error loading the tasks.
+     */
 
     public ArrayList<Task> load() throws NovaException {
         ArrayList<Task> tasks = new ArrayList<>();
@@ -134,6 +249,14 @@ class Storage {
         }
         return tasks;
     }
+
+    /**
+     * Parses a task from a line of text.
+     *
+     * @param line The line of text to parse.
+     * @return The parsed task.
+     * @throws NovaException If there is an error parsing the task.
+     */
 
     private Task parseTask(String line) throws NovaException {
         String[] parts = line.split("\\|");
@@ -168,6 +291,15 @@ class Storage {
         return task;
     }
 
+
+    /**
+     * Saves tasks to the storage file.
+     *
+     * @param tasks The list of tasks to save.
+     * @throws NovaException If there is an error saving the tasks.
+     */
+
+
     public void save(ArrayList<Task> tasks) throws NovaException {
         try {
             FileWriter writer = new FileWriter(filePath);
@@ -179,6 +311,13 @@ class Storage {
             throw new NovaException("Error saving tasks: " + e.getMessage());
         }
     }
+
+    /**
+     * Formats a task as a string for saving to the file.
+     *
+     * @param task The task to format.
+     * @return The formatted task string.
+     */
 
     private String formatTask(Task task) {
         String type = "";
@@ -200,7 +339,23 @@ class Storage {
     }
 }
 
+/**
+ * The parser class for the Nova application.
+ *
+ * This class is responsible for parsing user input and creating the
+ * corresponding Command objects.
+ */
+
 class Parser {
+
+    /**
+     * Parses a command from user input.
+     *
+     * @param input The user input to parse.
+     * @return The parsed Command object.
+     * @throws NovaException If the input is invalid or an unknown command is encountered.
+     */
+
     public Command parse(String input) throws NovaException {
         String[] inputParts = input.split(" ", 2);
         String command = inputParts[0];
@@ -229,6 +384,10 @@ class Parser {
     }
 }
 
+/**
+ * A class representing a list of tasks.
+ */
+
 class TaskList {
     private final ArrayList<Task> tasks;
 
@@ -236,30 +395,71 @@ class TaskList {
         tasks = new ArrayList<>();
     }
 
+    /**
+     * Constructs a task list with the given list of tasks.
+     *
+     * @param tasks The initial list of tasks.
+     */
+
     public TaskList(ArrayList<Task> tasks) {
         this.tasks = tasks;
     }
+
+    /**
+     * Returns the list of tasks.
+     *
+     * @return The list of tasks.
+     */
 
     public ArrayList<Task> getTasks() {
         return tasks;
     }
 
+    /**
+     * Adds a task to the list.
+     *
+     * @param task The task to add.
+     */
+
     public void addTask(Task task) {
         tasks.add(task);
     }
+
+    /**
+     * Removes a task from the list.
+     *
+     * @param index The index of the task to remove.
+     */
 
     public void removeTask(int index) {
         tasks.remove(index);
     }
 
+    /**
+     * Gets a task from the list.
+     *
+     * @param index The index of the task to get.
+     * @return The task at the given index.
+     */
+
     public Task getTask(int index) {
         return tasks.get(index);
     }
+
+    /**
+     * Returns the number of tasks in the list.
+     *
+     * @return The number of tasks in the list.
+     */
 
     public int size() {
         return tasks.size();
     }
 }
+
+/**
+ * An abstract class representing a command in the Nova application.
+ */
 
 abstract class Command {
     public abstract void execute(TaskList tasks, Ui ui, Storage storage) throws NovaException;
