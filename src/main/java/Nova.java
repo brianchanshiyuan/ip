@@ -12,7 +12,6 @@ import java.util.Scanner;
  * This class is responsible for initializing the application,
  * running the main command loop, and handling user input.
  */
-
 public class Nova {
 
     private Storage storage;
@@ -25,7 +24,6 @@ public class Nova {
      *
      * @param filePath The path to the file where tasks are stored.
      */
-
     public Nova(String filePath) {
         ui = new Ui();
         storage = new Storage(filePath);
@@ -38,15 +36,12 @@ public class Nova {
         }
     }
 
-
     /**
      * Runs the main command loop.
      *
      * This method continuously reads user input, parses it,
      * and executes the corresponding command.
      */
-
-
     public void run() {
         ui.showWelcome();
         boolean isExit = false;
@@ -70,7 +65,6 @@ public class Nova {
      *
      * @param args The command line arguments (not used).
      */
-
     public static void main(String[] args) {
         new Nova("./data/Nova.txt").run();
     }
@@ -82,7 +76,6 @@ public class Nova {
  * This class is responsible for displaying messages to the user,
  * reading user input, and showing the task list.
  */
-
 class Ui {
     private static final String SEPARATOR = "____________________________________________________________";
     private final Scanner scanner = new Scanner(System.in);
@@ -97,7 +90,6 @@ class Ui {
     /**
      * Displays a separator line.
      */
-
     public void showLine() {
         System.out.println(SEPARATOR);
     }
@@ -107,7 +99,6 @@ class Ui {
      *
      * @return The command entered by the user.
      */
-
     public String readCommand() {
         return scanner.nextLine().trim();
     }
@@ -117,7 +108,6 @@ class Ui {
      *
      * @param message The error message to display.
      */
-
     public void showError(String message) {
         System.out.println("OOPS!!! " + message);
     }
@@ -127,7 +117,6 @@ class Ui {
      *
      * @param message The error message to display.
      */
-
     public void showLoadingError(String message) {
         System.err.println("Error loading tasks: " + message);
     }
@@ -135,7 +124,6 @@ class Ui {
     /**
      * Displays the exit message.
      */
-
     public void showExit() {
         System.out.println("Bye. Hope to see you again soon!");
     }
@@ -146,7 +134,6 @@ class Ui {
      * @param task The task that was added.
      * @param taskCount The new total number of tasks.
      */
-
     public void showTaskAdded(Task task, int taskCount) {
         System.out.println("Got it. I've added this task:");
         System.out.println("   " + task);
@@ -159,7 +146,6 @@ class Ui {
      * @param task The task that was removed.
      * @param taskCount The new total number of tasks.
      */
-
     public void showTaskRemoved(Task task, int taskCount) {
         System.out.println("Noted. I've removed this task:");
         System.out.println("   " + task);
@@ -171,7 +157,6 @@ class Ui {
      *
      * @param tasks The list of tasks to display.
      */
-
     public void showTaskList(ArrayList<Task> tasks) {
         System.out.println("Here are the tasks in your list:");
         for (int i = 0; i < tasks.size(); i++) {
@@ -185,7 +170,6 @@ class Ui {
      * @param task The task that was marked.
      * @param isDone Whether the task was marked as done or not done.
      */
-
     public void showTaskMarked(Task task, boolean isDone) {
         System.out.println(" " + (isDone ? "Nice! I've marked this task as done:" : "OK, I've marked this task as not done yet:"));
         System.out.println("   " + task);
@@ -196,7 +180,6 @@ class Ui {
      *
      * @param foundTasks The list of tasks that match the search keyword.
      */
-
     public void showFoundTasks(ArrayList<Task> foundTasks) {
         System.out.println("Here are the matching tasks in your list:");
         for (int i = 0; i < foundTasks.size(); i++) {
@@ -211,7 +194,6 @@ class Ui {
  *
  * This class is responsible for loading tasks from and saving tasks to a file.
  */
-
 class Storage {
     private final String filePath;
     /**
@@ -219,7 +201,6 @@ class Storage {
      *
      * @param filePath The path to the file where tasks are stored.
      */
-
     public Storage(String filePath) {
         this.filePath = filePath;
     }
@@ -231,7 +212,6 @@ class Storage {
      * @return An ArrayList of tasks loaded from the file.
      * @throws NovaException If there is an error loading the tasks.
      */
-
     public ArrayList<Task> load() throws NovaException {
         ArrayList<Task> tasks = new ArrayList<>();
         try {
@@ -257,7 +237,6 @@ class Storage {
      * @return The parsed task.
      * @throws NovaException If there is an error parsing the task.
      */
-
     private Task parseTask(String line) throws NovaException {
         String[] parts = line.split("\\|");
         if (parts.length < 3) {
@@ -298,8 +277,6 @@ class Storage {
      * @param tasks The list of tasks to save.
      * @throws NovaException If there is an error saving the tasks.
      */
-
-
     public void save(ArrayList<Task> tasks) throws NovaException {
         try {
             FileWriter writer = new FileWriter(filePath);
@@ -318,7 +295,6 @@ class Storage {
      * @param task The task to format.
      * @return The formatted task string.
      */
-
     private String formatTask(Task task) {
         String type = "";
         if (task instanceof Todo) {
@@ -345,7 +321,6 @@ class Storage {
  * This class is responsible for parsing user input and creating the
  * corresponding Command objects.
  */
-
 class Parser {
 
     /**
@@ -355,7 +330,6 @@ class Parser {
      * @return The parsed Command object.
      * @throws NovaException If the input is invalid or an unknown command is encountered.
      */
-
     public Command parse(String input) throws NovaException {
         String[] inputParts = input.split(" ", 2);
         String command = inputParts[0];
@@ -387,7 +361,6 @@ class Parser {
 /**
  * A class representing a list of tasks.
  */
-
 class TaskList {
     private final ArrayList<Task> tasks;
 
@@ -400,7 +373,6 @@ class TaskList {
      *
      * @param tasks The initial list of tasks.
      */
-
     public TaskList(ArrayList<Task> tasks) {
         this.tasks = tasks;
     }
@@ -410,7 +382,6 @@ class TaskList {
      *
      * @return The list of tasks.
      */
-
     public ArrayList<Task> getTasks() {
         return tasks;
     }
@@ -420,7 +391,6 @@ class TaskList {
      *
      * @param task The task to add.
      */
-
     public void addTask(Task task) {
         tasks.add(task);
     }
@@ -430,7 +400,6 @@ class TaskList {
      *
      * @param index The index of the task to remove.
      */
-
     public void removeTask(int index) {
         tasks.remove(index);
     }
@@ -441,7 +410,6 @@ class TaskList {
      * @param index The index of the task to get.
      * @return The task at the given index.
      */
-
     public Task getTask(int index) {
         return tasks.get(index);
     }
@@ -451,7 +419,6 @@ class TaskList {
      *
      * @return The number of tasks in the list.
      */
-
     public int size() {
         return tasks.size();
     }
@@ -460,7 +427,6 @@ class TaskList {
 /**
  * An abstract class representing a command in the Nova application.
  */
-
 abstract class Command {
     public abstract void execute(TaskList tasks, Ui ui, Storage storage) throws NovaException;
 
@@ -469,6 +435,9 @@ abstract class Command {
     }
 }
 
+/**
+ * A command to list all tasks.
+ */
 class ListCommand extends Command {
     @Override
     public void execute(TaskList tasks, Ui ui, Storage storage) throws NovaException {
@@ -476,15 +445,32 @@ class ListCommand extends Command {
     }
 }
 
+/**
+ * A command to mark a task as done or not done.
+ */
 class MarkCommand extends Command {
     private final String input;
     private final boolean isDone;
 
+    /**
+     * Constructs a new MarkCommand.
+     *
+     * @param input The user input containing the task number to mark.
+     * @param isDone Whether to mark the task as done or not done.
+     */
     public MarkCommand(String input, boolean isDone) {
         this.input = input;
         this.isDone = isDone;
     }
 
+    /**
+     * Executes the mark command.
+     *
+     * @param tasks The task list to operate on.
+     * @param ui The user interface to use for display.
+     * @param storage The storage to use for saving tasks.
+     * @throws NovaException If there is an error executing the command.
+     */
     @Override
     public void execute(TaskList tasks, Ui ui, Storage storage) throws NovaException {
         int taskIndex = getTaskIndex(input, tasks);
@@ -494,6 +480,14 @@ class MarkCommand extends Command {
         storage.save(tasks.getTasks());
     }
 
+    /**
+     * Gets the index of the task to mark from the user input.
+     *
+     * @param input The user input containing the task number.
+     * @param tasks The task list.
+     * @return The index of the task to mark.
+     * @throws NovaException If the input is invalid or the task number is out of range.
+     */
     private int getTaskIndex(String input, TaskList tasks) throws NovaException {
         try {
             int taskIndex = Integer.parseInt(input.split(" ")[1]) - 1;
@@ -507,13 +501,29 @@ class MarkCommand extends Command {
     }
 }
 
+/**
+ * A command to add a new todotask.
+ */
 class TodoCommand extends Command {
     private final String[] inputParts;
 
+    /**
+     * Constructs a new TodoCommand.
+     *
+     * @param inputParts The user input split into command and task description.
+     */
     public TodoCommand(String[] inputParts) {
         this.inputParts = inputParts;
     }
 
+    /**
+     * Executes the todocommand.
+     *
+     * @param tasks The task list to operate on.
+     * @param ui The user interface to use for display.
+     * @param storage The storage to use for saving tasks.
+     * @throws NovaException If there is an error executing the command.
+     */
     @Override
     public void execute(TaskList tasks, Ui ui, Storage storage) throws NovaException {
         if (inputParts.length < 2 || inputParts[1].trim().isEmpty()) {
@@ -526,13 +536,29 @@ class TodoCommand extends Command {
     }
 }
 
+/**
+ * A command to add a new deadline task.
+ */
 class DeadlineCommand extends Command {
     private final String[] inputParts;
 
+    /**
+     * Constructs a new DeadlineCommand.
+     *
+     * @param inputParts The user input split into command and task details.
+     */
     public DeadlineCommand(String[] inputParts) {
         this.inputParts = inputParts;
     }
 
+    /**
+     * Executes the deadline command.
+     *
+     * @param tasks The task list to operate on.
+     * @param ui The user interface to use for display.
+     * @param storage The storage to use for saving tasks.
+     * @throws NovaException If there is an error executing the command.
+     */
     @Override
     public void execute(TaskList tasks, Ui ui, Storage storage) throws NovaException {
         if (inputParts.length < 2 || inputParts[1].trim().isEmpty()) {
@@ -545,7 +571,15 @@ class DeadlineCommand extends Command {
         storage.save(tasks.getTasks());
     }
 
-    private String[] parseTaskDetails(String input, String delimiter) throws NovaException {
+    /**
+     * Parses the task details from the user input.
+     *
+     * @param input The user input containing the task details.
+     * @param delimiter The delimiter to split the input by.
+     * @return The parsed task details.
+     * @throws NovaException If the input is invalid.
+     */
+    private string[] parseTaskDetails(String input, String delimiter) throws NovaException {
         String[] details = input.split(" " + delimiter + " ", 2);
         if (details.length < 2) {
             throw new NovaException("Invalid format! Use 'deadline [task] /by [date]'.");
@@ -554,13 +588,29 @@ class DeadlineCommand extends Command {
     }
 }
 
+/**
+ * A command to add a new event task.
+ */
 class EventCommand extends Command {
     private final String[] inputParts;
 
+    /**
+     * Constructs a new EventCommand.
+     *
+     * @param inputParts The user input split into command and task details.
+     */
     public EventCommand(String[] inputParts) {
         this.inputParts = inputParts;
     }
 
+    /**
+     * Executes the event command.
+     *
+     * @param tasks The task list to operate on.
+     * @param ui The user interface to use for display.
+     * @param storage The storage to use for saving tasks.
+     * @throws NovaException If there is an error executing the command.
+     */
     @Override
     public void execute(TaskList tasks, Ui ui, Storage storage) throws NovaException {
         if (inputParts.length < 2 || inputParts[1].trim().isEmpty()) {
@@ -574,6 +624,14 @@ class EventCommand extends Command {
         storage.save(tasks.getTasks());
     }
 
+    /**
+     * Parses the task details from the user input.
+     *
+     * @param input The user input containing the task details.
+     * @param delimiter The delimiter to split the input by.
+     * @return The parsed task details.
+     * @throws NovaException If the input is invalid.
+     */
     private String[] parseTaskDetails(String input, String delimiter) throws NovaException {
         String[] details = input.split(" " + delimiter + " ", 2);
         if (details.length < 2) {
@@ -583,13 +641,29 @@ class EventCommand extends Command {
     }
 }
 
+/**
+ * A command to delete a task.
+ */
 class DeleteCommand extends Command {
     private final String input;
 
+    /**
+     * Constructs a new DeleteCommand.
+     *
+     * @param input The user input containing the task number to delete.
+     */
     public DeleteCommand(String input) {
         this.input = input;
     }
 
+    /**
+     * Executes the delete command.
+     *
+     * @param tasks The task list to operate on.
+     * @param ui The user interface to use for display.
+     * @param storage The storage to use for saving tasks.
+     * @throws NovaException If there is an error executing the command.
+     */
     @Override
     public void execute(TaskList tasks, Ui ui, Storage storage) throws NovaException {
         int taskIndex = getTaskIndex(input, tasks);
@@ -599,6 +673,14 @@ class DeleteCommand extends Command {
         storage.save(tasks.getTasks());
     }
 
+    /**
+     * Gets the index of the task to delete from the user input.
+     *
+     * @param input The user input containing the task number.
+     * @param tasks The task list.
+     * @return The index of the task to delete.
+     * @throws NovaException If the input is invalid or the task number is out of range.
+     */
     private int getTaskIndex(String input, TaskList tasks) throws NovaException {
         try {
             int taskIndex = Integer.parseInt(input.split(" ")[1]) - 1;
@@ -612,25 +694,49 @@ class DeleteCommand extends Command {
     }
 }
 
+/**
+ * A command to exit the application.
+ */
 class ExitCommand extends Command {
     @Override
     public void execute(TaskList tasks, Ui ui, Storage storage) throws NovaException {
         ui.showExit();
     }
 
+    /**
+     * Returns true, as this command is an exit command.
+     *
+     * @return true.
+     */
     @Override
     public boolean isExit() {
         return true;
     }
 }
 
+/**
+ * A command to find tasks containing a specific keyword.
+ */
 class FindCommand extends Command {
     private final String[] inputParts;
 
+    /**
+     * Constructs a new FindCommand.
+     *
+     * @param inputParts The user input split into command and keyword.
+     */
     public FindCommand(String[] inputParts) {
         this.inputParts = inputParts;
     }
 
+    /**
+     * Executes the find command.
+     *
+     * @param tasks The task list to operate on.
+     * @param ui The user interface to use for display.
+     * @param storage The storage (not used in this command).
+     * @throws NovaException If there is an error executing the command.
+     */
     @Override
     public void execute(TaskList tasks, Ui ui, Storage storage) throws NovaException {
         if (inputParts.length < 2 || inputParts[1].trim().isEmpty()) {
@@ -647,25 +753,46 @@ class FindCommand extends Command {
     }
 }
 
+/**
+ * An abstract class representing a task in the Nova application.
+ */
 class Task {
     protected String description;
     protected boolean isDone;
 
+    /**
+     * Constructs a new Task.
+     *
+     * @param description The description of the task.
+     */
     public Task(String description) {
         this.description = description;
         this.isDone = false;
     }
 
+    /**
+     * Marks the task as done or not done.
+     *
+     * @param isDone Whether the task is done or not done.
+     */
     public void markAsDone(boolean isDone) {
         this.isDone = isDone;
     }
 
+    /**
+     * Returns a string representation of the task.
+     *
+     * @return The string representation of the task.
+     */
     @Override
     public String toString() {
         return "[" + (isDone ? "X" : " ") + "] " + description;
     }
 }
 
+/**
+ * A class representing a todotask.
+ */
 class Todo extends Task {
     public Todo(String description) {
         super(description);
