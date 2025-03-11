@@ -60,7 +60,6 @@ This command marks the first task in the list as done.
 Nice! I've marked this task as done:
 [T][X] Buy groceries
 
-
 ## Unmarking Tasks
 
 To unmark a task as done, use the `unmark` command followed by the task number.
