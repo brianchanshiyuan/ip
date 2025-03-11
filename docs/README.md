@@ -35,7 +35,6 @@ This command adds an event task with the description "Meeting with John", a star
 Added: [E][ ] Meeting with John (from: 2024-03-10 10:00 to: 2024-03-10 11:00)
 Now you have 1 tasks in the list.
 
-
 ## Listing Tasks
 
 To list all tasks, use the `list` command.
