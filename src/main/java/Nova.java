@@ -579,7 +579,7 @@ class DeadlineCommand extends Command {
      * @return The parsed task details.
      * @throws NovaException If the input is invalid.
      */
-    private string[] parseTaskDetails(String input, String delimiter) throws NovaException {
+    private String[] parseTaskDetails(String input, String delimiter) throws NovaException {
         String[] details = input.split(" " + delimiter + " ", 2);
         if (details.length < 2) {
             throw new NovaException("Invalid format! Use 'deadline [task] /by [date]'.");
