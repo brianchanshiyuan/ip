@@ -1,4 +1,2 @@
 D | 0 | asdkaskdas | kas;ds
-T | 1 | asdlasd
-T | 1 | eat sldjas
-D | 0 | jaspdkasd  | aisdjas
+T | 0 | asdlasd
